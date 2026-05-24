@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://bnxhol7ffe6lv"]
+
+[ext_resource type="Script" path="res://scenes/actors/npc.gd" id="1_7xp2e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hey5q"]
+size = Vector2(20, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gb2vq"]
+size = Vector2(48, 48)
+
+[node name="NPC" type="StaticBody2D"]
+script = ExtResource("1_7xp2e")
+
+[node name="Sprite" type="ColorRect" parent="."]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(0.419813, 0.419813, 0.419813, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_hey5q")
+
+[node name="InteractArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("RectangleShape2D_gb2vq")

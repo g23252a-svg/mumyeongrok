@@ -22,6 +22,7 @@ func _ready() -> void:
 	add_to_group("player")
 	hitbox.monitoring = false
 	hitbox_shape.disabled = true
+	
 	print("PLAYER READY")
 
 

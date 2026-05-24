@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b8vkxvsmwesu0"]
+[gd_scene load_steps=8 format=3 uid="uid://b8vkxvsmwesu0"]
 
 [ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_lko3o"]
 [ext_resource type="Script" path="res://scripts/actors/camera_follow.gd" id="2_obux8"]
+[ext_resource type="PackedScene" uid="uid://bnxhol7ffe6lv" path="res://scenes/actors/npc.tscn" id="3_gphku"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6egxa"]
 size = Vector2(400, 8)
@@ -40,3 +41,6 @@ shape = SubResource("RectangleShape2D_45dtr")
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_obux8")
 target_path = NodePath("../Walls/Player")
+
+[node name="NPC" parent="." instance=ExtResource("3_gphku")]
+position = Vector2(60, 0)
