@@ -10,6 +10,12 @@ extends StaticBody2D
 	"검은 점들이 떠 있다던데… 배인지, 새떼인지 모르겠구먼."
 ]
 
+@export var return_dialogue_lines: Array[String] = [
+	"다들 같은 말을 하고 있군요.",
+	"동래 쪽 바다가 심상치 않아요.",
+	"당신, 이제 어찌해야 해요?"
+]
+
 @export var npc_color: Color = Color(0.55, 0.43, 0.28)
 
 @onready var sprite: ColorRect = get_node_or_null("Sprite") as ColorRect
@@ -105,14 +111,28 @@ func talk() -> void:
 	if player != null and player.has_method("lock"):
 		player.lock()
 
-	await dialogue_box.show_dialogue(display_name, dialogue_lines)
+	var is_yeonhwa_return_talk := (
+		npc_id == "wife"
+		and QuestSystem.is_all_villagers_talked()
+		and not QuestSystem.is_returned_to_yeonhwa()
+	)
+
+	var lines_to_show: Array[String] = dialogue_lines
+
+	if is_yeonhwa_return_talk and return_dialogue_lines.size() > 0:
+		lines_to_show = return_dialogue_lines
+
+	await dialogue_box.show_dialogue(display_name, lines_to_show)
 
 	if player != null and player.has_method("unlock"):
 		player.unlock()
 
 	if not has_talked:
 		NotebookSystem.add_entry(npc_id, display_name, description)
+		QuestSystem.mark_npc_talked(npc_id)
 		has_talked = true
+	elif is_yeonhwa_return_talk:
+		QuestSystem.mark_returned_to_yeonhwa()
 
 	is_talking = false
 

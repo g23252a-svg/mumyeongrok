@@ -1,7 +1,7 @@
 class_name Player
 extends CharacterBody2D
 
-const SPEED := 60.0
+@export var move_speed: float = 120.0
 const ATTACK_DURATION := 0.35
 
 @onready var hitbox: Area2D = $Hitbox
@@ -64,7 +64,7 @@ func _physics_process(_delta: float) -> void:
 
 	if dir != Vector2.ZERO:
 		dir = dir.normalized()
-		velocity = dir * SPEED
+		velocity = dir * move_speed
 		facing = dir
 		_update_hitbox_position()
 		state = State.WALK
