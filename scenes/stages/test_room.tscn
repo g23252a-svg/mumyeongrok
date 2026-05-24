@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://b8vkxvsmwesu0"]
+[gd_scene load_steps=10 format=3 uid="uid://b8vkxvsmwesu0"]
 
 [ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_lko3o"]
 [ext_resource type="Script" path="res://scripts/actors/camera_follow.gd" id="2_obux8"]
 [ext_resource type="PackedScene" uid="uid://bnxhol7ffe6lv" path="res://scenes/actors/npc.tscn" id="3_gphku"]
 [ext_resource type="PackedScene" uid="uid://b85eyeq21yh3c" path="res://scenes/ui/dialogue_box.tscn" id="5_0psg8"]
+[ext_resource type="PackedScene" uid="uid://c02gkkgwltw46" path="res://scenes/ui/notebook_ui.tscn" id="5_l63ce"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6egxa"]
 size = Vector2(400, 8)
@@ -47,3 +48,5 @@ target_path = NodePath("../Walls/Player")
 position = Vector2(60, 0)
 
 [node name="DialogueBox" parent="." instance=ExtResource("5_0psg8")]
+
+[node name="NotebookUI" parent="." instance=ExtResource("5_l63ce")]
