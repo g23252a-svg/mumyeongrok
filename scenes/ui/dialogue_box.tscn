@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://b85eyeq21yh3c"]
+
+[ext_resource type="Script" path="res://scripts/ui/dialogue_box.gd" id="1_ykuyw"]
+
+[node name="DialogueBox" type="CanvasLayer"]
+script = ExtResource("1_ykuyw")
+
+[node name="Panel" type="ColorRect" parent="."]
+offset_left = 18.0
+offset_top = 156.0
+offset_right = 408.0
+offset_bottom = 226.0
+color = Color(0, 0, 0, 0.8)
+
+[node name="NameLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 6.0
+offset_right = 372.0
+offset_bottom = 29.0
+text = "김막동"
+
+[node name="TextLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 28.0
+offset_right = 372.0
+offset_bottom = 66.0
+autowrap_mode = 2

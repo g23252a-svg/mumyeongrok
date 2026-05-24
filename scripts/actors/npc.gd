@@ -15,6 +15,7 @@ extends StaticBody2D
 var player_in_range: bool = false
 var has_talked: bool = false
 var e_was_down: bool = false
+var is_talking: bool = false
 
 
 func _ready() -> void:
@@ -37,27 +38,47 @@ func _on_body_exited(body: Node) -> void:
 
 
 func _process(_delta: float) -> void:
+	if is_talking:
+		return
+
 	var interact_pressed := false
 
 	if InputMap.has_action("interact") and Input.is_action_just_pressed("interact"):
 		interact_pressed = true
 
 	var e_down := Input.is_key_pressed(KEY_E) or Input.is_physical_key_pressed(KEY_E)
+
 	if e_down and not e_was_down:
 		interact_pressed = true
+
 	e_was_down = e_down
 
 	if player_in_range and interact_pressed:
-		talk()
+		await talk()
 
 
 func talk() -> void:
-	print("===== 대화 시작 =====")
-	print(display_name, ":")
-	for line in dialogue_lines:
-		print("  ", line)
-	print("===================")
+	is_talking = true
+
+	var dialogue_box = get_tree().get_first_node_in_group("dialogue_box")
+
+	if dialogue_box == null:
+		print("[ERROR] DialogueBox를 찾을 수 없음")
+		is_talking = false
+		return
+
+	var player = get_tree().get_first_node_in_group("player")
+
+	if player != null and player.has_method("lock"):
+		player.lock()
+
+	await dialogue_box.show_dialogue(display_name, dialogue_lines)
+
+	if player != null and player.has_method("unlock"):
+		player.unlock()
 
 	if not has_talked:
 		NotebookSystem.add_entry(npc_id, display_name, description)
 		has_talked = true
+
+	is_talking = false
