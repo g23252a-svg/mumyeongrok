@@ -10,6 +10,11 @@ extends StaticBody2D
 	"검은 점들이 떠 있다던데… 배인지, 새떼인지 모르겠구먼."
 ]
 
+@export var npc_color: Color = Color(0.55, 0.43, 0.28)
+
+@onready var sprite: ColorRect = get_node_or_null("Sprite") as ColorRect
+@onready var name_label: Label = get_node_or_null("NameLabel") as Label
+@onready var interaction_hint: Label = get_node_or_null("InteractionHint") as Label
 @onready var interact_area: Area2D = $InteractArea
 
 var player_in_range: bool = false
@@ -20,20 +25,41 @@ var is_talking: bool = false
 
 func _ready() -> void:
 	add_to_group("npc")
+
+	if sprite != null:
+		sprite.color = npc_color
+
+	if name_label != null:
+		name_label.text = display_name
+		name_label.visible = true
+
+	if interaction_hint != null:
+		interaction_hint.text = "[E] 대화"
+		interaction_hint.visible = false
+
 	interact_area.body_entered.connect(_on_body_entered)
 	interact_area.body_exited.connect(_on_body_exited)
+
 	print("[NPC READY] ", display_name)
 
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = true
+
+		if interaction_hint != null and not is_talking:
+			interaction_hint.visible = true
+
 		print("[NPC] ", display_name, " 근처에 Player 진입")
 
 
 func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
+
+		if interaction_hint != null:
+			interaction_hint.visible = false
+
 		print("[NPC] ", display_name, " 근처에서 Player 이탈")
 
 
@@ -60,11 +86,18 @@ func _process(_delta: float) -> void:
 func talk() -> void:
 	is_talking = true
 
+	if interaction_hint != null:
+		interaction_hint.visible = false
+
 	var dialogue_box = get_tree().get_first_node_in_group("dialogue_box")
 
 	if dialogue_box == null:
 		print("[ERROR] DialogueBox를 찾을 수 없음")
 		is_talking = false
+
+		if player_in_range and interaction_hint != null:
+			interaction_hint.visible = true
+
 		return
 
 	var player = get_tree().get_first_node_in_group("player")
@@ -82,3 +115,6 @@ func talk() -> void:
 		has_talked = true
 
 	is_talking = false
+
+	if player_in_range and interaction_hint != null:
+		interaction_hint.visible = true
