@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://b8vkxvsmwesu0"]
+
+[ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_lko3o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6egxa"]
+size = Vector2(400, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tffog"]
+size = Vector2(400, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dumss"]
+size = Vector2(8, 220)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_45dtr"]
+size = Vector2(8, 220)
+
+[node name="TestRoom" type="Node2D"]
+
+[node name="Walls" type="StaticBody2D" parent="."]
+position = Vector2(32, -40)
+
+[node name="WallTop" type="CollisionShape2D" parent="Walls"]
+position = Vector2(0, -110)
+shape = SubResource("RectangleShape2D_6egxa")
+
+[node name="WallBottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(0, 110)
+shape = SubResource("RectangleShape2D_tffog")
+
+[node name="WallLeft" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-200, 0)
+shape = SubResource("RectangleShape2D_dumss")
+
+[node name="WallRight" type="CollisionShape2D" parent="Walls"]
+position = Vector2(200, 0)
+shape = SubResource("RectangleShape2D_45dtr")
+
+[node name="Player" parent="Walls" instance=ExtResource("1_lko3o")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(31, -24)

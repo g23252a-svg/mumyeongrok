@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://uqtjlp5ar27a"]
+
+[ext_resource type="Script" path="res://scripts/actors/player.gd" id="1_dordv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1kdmt"]
+size = Vector2(20, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qky4v"]
+size = Vector2(12, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hsqs1"]
+size = Vector2(16, 20)
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_dordv")
+
+[node name="Sprite" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(24, 24)
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_1kdmt")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_qky4v")
+disabled = true
+
+[node name="Hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_hsqs1")
