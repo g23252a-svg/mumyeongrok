@@ -44,8 +44,30 @@ shape = SubResource("RectangleShape2D_45dtr")
 script = ExtResource("2_obux8")
 target_path = NodePath("../Walls/Player")
 
-[node name="NPC" parent="." instance=ExtResource("3_gphku")]
+[node name="NPC_KimMakdong" parent="." instance=ExtResource("3_gphku")]
 position = Vector2(60, 0)
+dialogue_lines = Array[String](["오늘은 일찍 들어왔구먼.", "산 너머 바다가 좀 이상하다는 말이 있네.", "검은 점들이 떠 있다더군. 배인지 뭔지…"])
+
+[node name="NPC_Booni" parent="." instance=ExtResource("3_gphku")]
+position = Vector2(-80, 40)
+npc_id = "booni"
+display_name = "분이"
+description = "우물가에서 물을 긷던 마을 처녀."
+dialogue_lines = Array[String](["아침부터 바닷가 쪽이 소란스럽다 하더라고요.", "아버지는 괜한 소문이라 하셨지만…", "저는 어쩐지 마음이 놓이지 않아요."])
+
+[node name="NPC_GwakSeobang" parent="." instance=ExtResource("3_gphku")]
+position = Vector2(120, 55)
+npc_id = "gwak_seobang"
+display_name = "곽서방"
+description = "마을 대장간을 지키던 장인."
+dialogue_lines = Array[String](["쇠가 이상하게 식질 않아.", "오늘은 불길이 영 말을 안 듣는군.", "혹시 길 떠날 일이 있으면 낡은 칼이라도 챙겨 가게."])
+
+[node name="NPC_Wife" parent="." instance=ExtResource("3_gphku")]
+position = Vector2(-60, -55)
+npc_id = "wife"
+display_name = "처"
+description = "집 앞에서 주인공을 기다리던 사람."
+dialogue_lines = Array[String](["오늘은 일찍 오셨네요.", "산에는 별일 없었습니까?", "아이가 아침부터 아버지를 기다렸습니다."])
 
 [node name="DialogueBox" parent="." instance=ExtResource("5_0psg8")]
 

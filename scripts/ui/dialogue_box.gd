@@ -13,16 +13,16 @@ func _ready() -> void:
 
 	panel.visible = false
 
-	panel.position = Vector2(18, 156)
-	panel.size = Vector2(390, 70)
+	panel.position = Vector2(18, 126)
+	panel.size = Vector2(390, 100)
 	panel.color = Color(0, 0, 0, 0.8)
 
 	name_label.position = Vector2(12, 6)
 	name_label.size = Vector2(360, 23)
 	name_label.text = ""
 
-	text_label.position = Vector2(12, 30)
-	text_label.size = Vector2(360, 38)
+	text_label.position = Vector2(12, 32)
+	text_label.size = Vector2(360, 62)
 	text_label.text = ""
 	text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
