@@ -6,11 +6,13 @@ const ATTACK_DURATION := 0.35
 
 @onready var hitbox: Area2D = $Hitbox
 @onready var hitbox_shape: CollisionShape2D = $Hitbox/CollisionShape2D
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 enum State { IDLE, WALK, ATTACK, HURT, LOCKED }
 
 var state: State = State.IDLE
 var facing: Vector2 = Vector2.DOWN
+var last_direction: String = "south"
 
 var key_left: bool = false
 var key_right: bool = false
@@ -20,9 +22,13 @@ var key_down: bool = false
 
 func _ready() -> void:
 	add_to_group("player")
+
+	_setup_animation_speeds()
+	_play_animation_safe("idle_south")
+
 	hitbox.monitoring = false
 	hitbox_shape.disabled = true
-	
+
 	print("PLAYER READY")
 
 
@@ -46,7 +52,13 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if state == State.LOCKED or state == State.ATTACK:
+	if state == State.LOCKED:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_update_animation(Vector2.ZERO)
+		return
+
+	if state == State.ATTACK:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
@@ -73,9 +85,116 @@ func _physics_process(_delta: float) -> void:
 		state = State.IDLE
 
 	move_and_slide()
+	_update_animation(dir)
 
 	if Input.is_action_just_pressed("attack"):
 		_attack()
+
+
+func _setup_animation_speeds() -> void:
+	if animated_sprite == null:
+		return
+	if animated_sprite.sprite_frames == null:
+		return
+
+	var idle_anims: Array[String] = [
+		"idle_south",
+		"idle_south_east",
+		"idle_east",
+		"idle_north_east",
+		"idle_north",
+		"idle_north_west",
+		"idle_west",
+		"idle_south_west"
+	]
+
+	var walk_anims: Array[String] = [
+		"walk_south",
+		"walk_south_east",
+		"walk_east",
+		"walk_north_east",
+		"walk_north",
+		"walk_north_west",
+		"walk_west",
+		"walk_south_west"
+	]
+
+	for anim_name: String in idle_anims:
+		_set_animation_speed_safe(anim_name, 4.0)
+
+	for anim_name: String in walk_anims:
+		_set_animation_speed_safe(anim_name, 8.0)
+
+
+func _set_animation_speed_safe(anim_name: String, fps: float) -> void:
+	if anim_name == "":
+		return
+	if animated_sprite == null:
+		return
+	if animated_sprite.sprite_frames == null:
+		return
+
+	var anim_key := StringName(anim_name)
+
+	if animated_sprite.sprite_frames.has_animation(anim_key):
+		animated_sprite.sprite_frames.set_animation_speed(anim_key, fps)
+	else:
+		print("[Player] missing animation: ", anim_name)
+
+
+func _get_direction_name(input_vector: Vector2) -> String:
+	if input_vector == Vector2.ZERO:
+		return last_direction
+
+	if abs(input_vector.x) < 0.3:
+		if input_vector.y > 0:
+			return "south"
+		else:
+			return "north"
+
+	if abs(input_vector.y) < 0.3:
+		if input_vector.x > 0:
+			return "east"
+		else:
+			return "west"
+
+	if input_vector.x > 0 and input_vector.y > 0:
+		return "south_east"
+	if input_vector.x < 0 and input_vector.y > 0:
+		return "south_west"
+	if input_vector.x > 0 and input_vector.y < 0:
+		return "north_east"
+	if input_vector.x < 0 and input_vector.y < 0:
+		return "north_west"
+
+	return last_direction
+
+
+func _update_animation(input_vector: Vector2) -> void:
+	if input_vector != Vector2.ZERO:
+		var direction_name: String = _get_direction_name(input_vector)
+		last_direction = direction_name
+		_play_animation_safe("idle_" + last_direction)
+	else:
+		_play_animation_safe("idle_" + last_direction)
+
+
+func _play_animation_safe(anim_name: String) -> void:
+	if anim_name == "":
+		return
+	if animated_sprite == null:
+		return
+	if animated_sprite.sprite_frames == null:
+		return
+
+	var anim_key := StringName(anim_name)
+
+	if not animated_sprite.sprite_frames.has_animation(anim_key):
+		print("[Player] missing animation: ", anim_name)
+		return
+
+	if animated_sprite.animation != anim_key:
+		animated_sprite.play(anim_key)
 
 
 func _update_hitbox_position() -> void:
@@ -92,12 +211,15 @@ func _attack() -> void:
 	hitbox.monitoring = false
 	hitbox_shape.disabled = true
 	state = State.IDLE
+	_update_animation(Vector2.ZERO)
 
 
 func lock() -> void:
 	state = State.LOCKED
 	velocity = Vector2.ZERO
+	_update_animation(Vector2.ZERO)
 
 
 func unlock() -> void:
 	state = State.IDLE
+	_update_animation(Vector2.ZERO)
