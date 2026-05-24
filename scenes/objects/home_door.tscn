@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://ch1oitmud1o25"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l2j5o"]
+size = Vector2(44, 56)
+
+[node name="HomeDoor" type="Area2D"]
+
+[node name="Sprite" type="ColorRect" parent="."]
+offset_left = -18.0
+offset_top = -24.0
+offset_right = 18.0
+offset_bottom = 24.0
+color = Color(0.352941, 0.231373, 0.145098, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_l2j5o")
+
+[node name="InteractionHint" type="Label" parent="."]
+visible = false
+offset_left = -44.0
+offset_top = -50.0
+offset_right = 44.0
+offset_bottom = -27.0
+text = "[E] 밤 준비"
+horizontal_alignment = 1

@@ -27,7 +27,7 @@ func _ready() -> void:
 	text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
-func show_dialogue(speaker: String, lines: Array[String]) -> void:
+func show_dialogue(speaker: String, lines: Array) -> void:
 	is_open = true
 	can_close = false
 	panel.visible = true
@@ -35,8 +35,9 @@ func show_dialogue(speaker: String, lines: Array[String]) -> void:
 	name_label.text = speaker
 
 	var body_text := ""
+	
 	for line in lines:
-		body_text += line + "\n"
+		body_text += str(line) + "\n"
 
 	text_label.text = body_text.strip_edges()
 

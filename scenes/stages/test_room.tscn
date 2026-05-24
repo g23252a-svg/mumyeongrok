@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b8vkxvsmwesu0"]
+[gd_scene load_steps=13 format=3 uid="uid://b8vkxvsmwesu0"]
 
 [ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_lko3o"]
 [ext_resource type="Script" path="res://scripts/actors/camera_follow.gd" id="2_obux8"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://b85eyeq21yh3c" path="res://scenes/ui/dialogue_box.tscn" id="5_0psg8"]
 [ext_resource type="PackedScene" uid="uid://c02gkkgwltw46" path="res://scenes/ui/notebook_ui.tscn" id="5_l63ce"]
 [ext_resource type="PackedScene" uid="uid://ck6jdxdkplkqj" path="res://scenes/ui/objective_ui.tscn" id="6_ui3kj"]
+[ext_resource type="PackedScene" uid="uid://ch1oitmud1o25" path="res://scenes/objects/home_door.tscn" id="7_edkim"]
+[ext_resource type="Script" path="res://scripts/objects/home_door.gd" id="8_r0lme"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6egxa"]
 size = Vector2(400, 8)
@@ -76,3 +78,7 @@ dialogue_lines = Array[String](["당신, 밖이 왜 이리 소란해요?", "개 
 [node name="NotebookUI" parent="." instance=ExtResource("5_l63ce")]
 
 [node name="ObjectiveUI" parent="." instance=ExtResource("6_ui3kj")]
+
+[node name="HomeDoor" parent="." instance=ExtResource("7_edkim")]
+position = Vector2(-165, -68)
+script = ExtResource("8_r0lme")
