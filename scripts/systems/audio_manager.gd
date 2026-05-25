@@ -2,6 +2,10 @@ extends Node
 
 var sfx_player: AudioStreamPlayer
 var bgm_player: AudioStreamPlayer
+var event_sfx_player: AudioStreamPlayer
+var outside_scream_stream: AudioStream
+var battle_layer_player: AudioStreamPlayer
+var outside_battle_layer_stream: AudioStream
 
 var footstep_streams: Array[AudioStream] = []
 
@@ -26,7 +30,8 @@ const NOTEBOOK_WRITE_PATH := "res://assets/audio/sfx/notebook_write.wav"
 const OBJECTIVE_UPDATE_PATH := "res://assets/audio/sfx/objective_update.wav"
 const HOME_DOOR_PATH := "res://assets/audio/sfx/home_door.wav"
 const NIGHT_TRANSITION_PATH := "res://assets/audio/sfx/night_transition.wav"
-
+const OUTSIDE_SCREAM_PATH := "res://assets/audio/sfx/outside_scream.wav"
+const OUTSIDE_BATTLE_LAYER_PATH := "res://assets/audio/sfx/outside_battle_layer.wav"
 const VILLAGE_EVENING_BGM_PATH := "res://assets/audio/bgm/village_evening.ogg"
 
 
@@ -38,8 +43,17 @@ func _ready() -> void:
 	bgm_player = AudioStreamPlayer.new()
 	bgm_player.bus = "Master"
 	add_child(bgm_player)
+	event_sfx_player = AudioStreamPlayer.new()
+	event_sfx_player.bus = "Master"
+	battle_layer_player = AudioStreamPlayer.new()
+	battle_layer_player.bus = "Master"
+	add_child(battle_layer_player)
+	add_child(event_sfx_player)
 
 	_load_audio_files()
+	
+	outside_scream_stream = _load_optional_audio(OUTSIDE_SCREAM_PATH)
+	outside_battle_layer_stream = _load_optional_audio(OUTSIDE_BATTLE_LAYER_PATH)
 
 
 func _load_audio_files() -> void:
@@ -131,3 +145,29 @@ func stop_bgm() -> void:
 
 func set_bgm_volume(volume_db: float) -> void:
 	bgm_player.volume_db = volume_db
+	
+func play_event_sfx(stream: AudioStream, volume_db: float = 0.0) -> void:
+	if stream == null:
+		return
+
+	event_sfx_player.stop()
+	event_sfx_player.stream = stream
+	event_sfx_player.volume_db = volume_db
+	event_sfx_player.play()
+
+
+func play_outside_scream() -> void:
+	play_event_sfx(outside_scream_stream, -3.0)
+	
+func play_battle_layer_sfx(stream: AudioStream, volume_db: float = 0.0) -> void:
+	if stream == null:
+		return
+
+	battle_layer_player.stop()
+	battle_layer_player.stream = stream
+	battle_layer_player.volume_db = volume_db
+	battle_layer_player.play()
+
+
+func play_outside_battle_layer() -> void:
+	play_battle_layer_sfx(outside_battle_layer_stream, -2.0)

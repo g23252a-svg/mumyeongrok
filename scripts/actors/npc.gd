@@ -8,6 +8,11 @@ extends StaticBody2D
 @export var npc_frames: SpriteFrames
 @export var start_direction: String = "south"
 
+var is_dawn_panic: bool = false
+
+@export var dawn_panic_direction: String = "north"
+@export var dawn_panic_lines: Array[String] = []
+
 @export var dialogue_lines: Array[String] = [
 	"오늘은 일찍 들어왔구먼.",
 	"산 너머 바다가 좀 이상하다는 말이 있네.",
@@ -71,8 +76,7 @@ func _setup_visual() -> void:
 		if legacy_sprite != null:
 			legacy_sprite.visible = false
 
-		var anim_name: String = "idle_" + current_direction
-		_play_npc_animation(anim_name)
+		_play_npc_animation("idle_" + current_direction)
 	else:
 		animated_sprite.visible = false
 
@@ -86,7 +90,9 @@ func _setup_visual() -> void:
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = true
-		_face_player()
+
+		if not is_dawn_panic:
+			_face_player()
 
 		if interaction_hint != null and not is_talking:
 			interaction_hint.visible = true
@@ -108,7 +114,7 @@ func _process(_delta: float) -> void:
 	if is_talking:
 		return
 
-	if player_in_range:
+	if player_in_range and not is_dawn_panic:
 		_face_player()
 
 	var interact_pressed: bool = false
@@ -129,7 +135,9 @@ func _process(_delta: float) -> void:
 
 func talk() -> void:
 	is_talking = true
-	_face_player()
+
+	if not is_dawn_panic:
+		_face_player()
 
 	if interaction_hint != null:
 		interaction_hint.visible = false
@@ -158,7 +166,9 @@ func talk() -> void:
 
 	var lines_to_show: Array[String] = dialogue_lines
 
-	if is_yeonhwa_return_talk and return_dialogue_lines.size() > 0:
+	if is_dawn_panic and dawn_panic_lines.size() > 0:
+		lines_to_show = dawn_panic_lines
+	elif is_yeonhwa_return_talk and return_dialogue_lines.size() > 0:
 		lines_to_show = return_dialogue_lines
 
 	await dialogue_box.show_dialogue(display_name, lines_to_show)
@@ -177,6 +187,18 @@ func talk() -> void:
 
 	if player_in_range and interaction_hint != null:
 		interaction_hint.visible = true
+
+
+func start_dawn_panic() -> void:
+	is_dawn_panic = true
+
+	if dawn_panic_direction == "":
+		dawn_panic_direction = "north"
+
+	current_direction = dawn_panic_direction
+	_play_npc_animation("idle_" + current_direction)
+
+	print("[NPC PANIC] ", display_name, " direction=", current_direction)
 
 
 func _get_direction_to_player() -> String:
@@ -209,8 +231,7 @@ func _face_player() -> void:
 
 	current_direction = _get_direction_to_player()
 
-	var anim_name: String = "idle_" + current_direction
-	_play_npc_animation(anim_name)
+	_play_npc_animation("idle_" + current_direction)
 
 
 func _play_npc_animation(anim_name: String) -> void:

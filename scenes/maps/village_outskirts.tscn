@@ -1,0 +1,265 @@
+[gd_scene load_steps=23 format=3 uid="uid://b4hgll550xph"]
+
+[ext_resource type="Script" path="res://scripts/maps/village_outskirts.gd" id="1_iqgyp"]
+[ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_it5ix"]
+[ext_resource type="PackedScene" uid="uid://b85eyeq21yh3c" path="res://scenes/ui/dialogue_box.tscn" id="2_k2x3d"]
+[ext_resource type="PackedScene" uid="uid://c02gkkgwltw46" path="res://scenes/ui/notebook_ui.tscn" id="3_ffmnh"]
+[ext_resource type="PackedScene" uid="uid://ck6jdxdkplkqj" path="res://scenes/ui/objective_ui.tscn" id="4_i53v4"]
+[ext_resource type="Script" path="res://scripts/actors/camera_follow.gd" id="5_d5cck"]
+[ext_resource type="Script" path="res://scripts/ui/transition.gd" id="6_e34u3"]
+[ext_resource type="Texture2D" uid="uid://dg5h3nyedrcjo" path="res://assets/maps/village_outskirts/village_outskirts_dawn.png" id="8_e03n1"]
+[ext_resource type="Script" path="res://scripts/objects/outskirts_clue.gd" id="9_8y4l0"]
+[ext_resource type="Script" path="res://scripts/objects/old_weapon_pickup.gd" id="10_jlkft"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j5hsc"]
+size = Vector2(235, 104.167)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r2lls"]
+size = Vector2(1200, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fhy4u"]
+size = Vector2(216.667, 118.333)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_26b2q"]
+size = Vector2(485, 150.833)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xklip"]
+size = Vector2(208.333, 91.6667)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n4h0d"]
+size = Vector2(460, 366.667)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6hep8"]
+size = Vector2(146.25, 87.9166)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ng5lg"]
+size = Vector2(174.167, 185.417)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xga24"]
+size = Vector2(90, 45)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yqc7o"]
+size = Vector2(95, 69.1667)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qkr6g"]
+size = Vector2(170, 90)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ufry3"]
+size = Vector2(45, 27.5)
+
+[node name="VillageOutskirts" type="Node2D"]
+position = Vector2(22, 17)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("1_iqgyp")
+
+[node name="Player" parent="." instance=ExtResource("1_it5ix")]
+position = Vector2(-33.3333, 400)
+scale = Vector2(4, 4)
+
+[node name="DialogueBox" parent="." instance=ExtResource("2_k2x3d")]
+
+[node name="NotebookUI" parent="." instance=ExtResource("3_ffmnh")]
+
+[node name="ObjectiveUI" parent="." instance=ExtResource("4_i53v4")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(31.6667, 0)
+zoom = Vector2(0.6, 0.6)
+script = ExtResource("5_d5cck")
+
+[node name="SceneTransition" type="CanvasLayer" parent="."]
+script = ExtResource("6_e34u3")
+
+[node name="BackgroundMap" type="Sprite2D" parent="."]
+z_index = -100
+texture = ExtResource("8_e03n1")
+
+[node name="Walls" type="StaticBody2D" parent="."]
+
+[node name="TopWallBlock" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-338.333, -315.833)
+shape = SubResource("RectangleShape2D_j5hsc")
+
+[node name="TopWallBlock2" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-256.667, -415)
+shape = SubResource("RectangleShape2D_j5hsc")
+
+[node name="NorthBoundaryWall" type="StaticBody2D" parent="Walls"]
+position = Vector2(-273.333, -408.333)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/NorthBoundaryWall"]
+position = Vector2(335, -111.667)
+shape = SubResource("RectangleShape2D_r2lls")
+
+[node name="LeftWallBlock" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-563.333, -251.667)
+shape = SubResource("RectangleShape2D_fhy4u")
+
+[node name="LeftWallBlock2" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-723.333, -213.333)
+shape = SubResource("RectangleShape2D_fhy4u")
+
+[node name="LeftWallBlock3" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-736.667, -93.3333)
+shape = SubResource("RectangleShape2D_fhy4u")
+
+[node name="LeftWallBlock4" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-596.667, 43.3333)
+shape = SubResource("RectangleShape2D_26b2q")
+
+[node name="RightWallBlock" type="CollisionShape2D" parent="Walls"]
+position = Vector2(205, -421.667)
+shape = SubResource("RectangleShape2D_xklip")
+
+[node name="RightWallBlock2" type="CollisionShape2D" parent="Walls"]
+position = Vector2(303.333, -355)
+shape = SubResource("RectangleShape2D_xklip")
+
+[node name="RightWallBlock3" type="CollisionShape2D" parent="Walls"]
+position = Vector2(501.667, -321.667)
+shape = SubResource("RectangleShape2D_xklip")
+
+[node name="RightWallBlock4" type="CollisionShape2D" parent="Walls"]
+position = Vector2(656.667, -285)
+shape = SubResource("RectangleShape2D_xklip")
+
+[node name="RightWallBlock5" type="CollisionShape2D" parent="Walls"]
+position = Vector2(733.333, -236.667)
+shape = SubResource("RectangleShape2D_xklip")
+
+[node name="BottomWallBlock" type="CollisionShape2D" parent="Walls"]
+position = Vector2(-601.667, 296.667)
+shape = SubResource("RectangleShape2D_n4h0d")
+
+[node name="BrokenCartBlock" type="CollisionShape2D" parent="Walls"]
+position = Vector2(380, -121.667)
+shape = SubResource("RectangleShape2D_6hep8")
+
+[node name="BrokenCartBlock2" type="CollisionShape2D" parent="Walls"]
+position = Vector2(423.333, -93.3333)
+shape = SubResource("RectangleShape2D_6hep8")
+
+[node name="BrokenCartBlock3" type="CollisionShape2D" parent="Walls"]
+position = Vector2(441.667, -170)
+shape = SubResource("RectangleShape2D_6hep8")
+
+[node name="BrokenCartBlock4" type="CollisionShape2D" parent="Walls"]
+position = Vector2(540, -98.9583)
+shape = SubResource("RectangleShape2D_6hep8")
+
+[node name="BrokenCartBlock5" type="CollisionShape2D" parent="Walls"]
+position = Vector2(568.333, -71.6667)
+shape = SubResource("RectangleShape2D_6hep8")
+
+[node name="RightHouseBlock" type="CollisionShape2D" parent="Walls"]
+position = Vector2(746.667, 305)
+shape = SubResource("RectangleShape2D_ng5lg")
+
+[node name="RightHouseBlock2" type="CollisionShape2D" parent="Walls"]
+position = Vector2(728.333, 10)
+shape = SubResource("RectangleShape2D_ng5lg")
+
+[node name="RightHouseBlock3" type="CollisionShape2D" parent="Walls"]
+position = Vector2(653.333, 105)
+shape = SubResource("RectangleShape2D_ng5lg")
+
+[node name="RightHouseBlock4" type="CollisionShape2D" parent="Walls"]
+position = Vector2(623.333, 236.667)
+shape = SubResource("RectangleShape2D_ng5lg")
+
+[node name="RightHouseBlock5" type="CollisionShape2D" parent="Walls"]
+position = Vector2(526.667, 118.333)
+shape = SubResource("RectangleShape2D_ng5lg")
+
+[node name="RightHouseBlock6" type="CollisionShape2D" parent="Walls"]
+position = Vector2(735, 135)
+shape = SubResource("RectangleShape2D_ng5lg")
+
+[node name="OutskirtsClues" type="Node2D" parent="."]
+
+[node name="BrokenSpearInspect" type="Area2D" parent="OutskirtsClues"]
+script = ExtResource("9_8y4l0")
+clue_id = "broken_spear"
+display_name = "부러진 창대"
+clue_lines = Array[String](["창대는 반쯤 부러져 있었다.", "끝에 묻은 흙은 아직 젖어 있었다", "누군가 여기서 급히 무기를 놓고 달아난 듯했다."])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OutskirtsClues/BrokenSpearInspect"]
+position = Vector2(245, 193.333)
+shape = SubResource("RectangleShape2D_xga24")
+
+[node name="InteractionHint" type="Label" parent="OutskirtsClues/BrokenSpearInspect"]
+visible = false
+z_index = 50
+offset_left = 238.333
+offset_top = 128.333
+offset_right = 280.333
+offset_bottom = 151.333
+theme_override_font_sizes/font_size = 25
+text = "[E] 조사"
+
+[node name="StrawShoesInspect" type="Area2D" parent="OutskirtsClues"]
+script = ExtResource("9_8y4l0")
+clue_id = "straw_shoes"
+display_name = "흩어진 짚신"
+clue_lines = Array[String](["짚신 한 켤레가 길가에 흩어져 있었다.", "한쪽은 뒤집혀 있었고, 다른 한쪽은 피가 묻어 있었다.", "이 길을 지나간 사람은 침착하게 걸어간 것이 아니었다."])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OutskirtsClues/StrawShoesInspect"]
+position = Vector2(328.333, 25)
+shape = SubResource("RectangleShape2D_yqc7o")
+
+[node name="InteractionHint" type="Label" parent="OutskirtsClues/StrawShoesInspect"]
+visible = false
+z_index = 50
+offset_left = 286.667
+offset_top = -48.3333
+offset_right = 373.667
+offset_bottom = -12.3333
+theme_override_font_sizes/font_size = 25
+text = "[E] 조사"
+
+[node name="BrokenCartInspect" type="Area2D" parent="OutskirtsClues"]
+script = ExtResource("9_8y4l0")
+clue_id = "broken_cart"
+display_name = "쓰러진 짐수레"
+clue_lines = Array[String](["짐수레는 옆으로 쓰러져 있었다.", "바퀴살은 부러졌고, 짐은 길 위에 흩어져 있었다.", "무언가가 이곳을 거칠게 지나간 흔적이었다."])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OutskirtsClues/BrokenCartInspect"]
+position = Vector2(328.333, -98.3333)
+shape = SubResource("RectangleShape2D_qkr6g")
+
+[node name="InteractionHint" type="Label" parent="OutskirtsClues/BrokenCartInspect"]
+visible = false
+z_index = 50
+offset_left = 333.333
+offset_top = -201.667
+offset_right = 375.333
+offset_bottom = -178.667
+theme_override_font_sizes/font_size = 25
+text = "[E] 조사"
+
+[node name="OldWeaponPickup" type="Area2D" parent="."]
+position = Vector2(216.667, 95)
+script = ExtResource("10_jlkft")
+pickup_lines = Array[String](["길가에 낡은 낫 하나가 떨어져 있었다.", "누군가 마지막까지 붙잡고 있었는지, 손잡이에는 흙과 땀이 배어 있었다.", "나는 떨리는 손으로 그것을 집어 들었다."])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OldWeaponPickup"]
+position = Vector2(73.3333, 13.3333)
+shape = SubResource("RectangleShape2D_ufry3")
+
+[node name="InteractionHint" type="Label" parent="OldWeaponPickup"]
+visible = false
+z_index = 50
+offset_left = -15.0
+offset_top = -40.0
+offset_right = 160.0
+offset_bottom = -4.0
+theme_override_font_sizes/font_size = 25
+text = "[E] 낡은 낫 줍기"
+
+[node name="ItemVisual" type="ColorRect" parent="OldWeaponPickup"]
+offset_left = 58.3333
+offset_top = 11.6667
+offset_right = 82.3333
+offset_bottom = 21.6667
+rotation = -0.436332
+color = Color(0.733005, 0.733005, 0.733005, 1)

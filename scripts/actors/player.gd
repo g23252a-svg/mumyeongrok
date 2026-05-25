@@ -2,7 +2,10 @@ class_name Player
 extends CharacterBody2D
 
 @export var move_speed: float = 120.0
-const ATTACK_DURATION := 0.35
+
+const ATTACK_HITBOX_DURATION: float = 0.18
+const ATTACK_RECOVERY_FALLBACK: float = 0.75
+const FOOTSTEP_INTERVAL: float = 0.30
 
 @onready var hitbox: Area2D = $Hitbox
 @onready var hitbox_shape: CollisionShape2D = $Hitbox/CollisionShape2D
@@ -14,8 +17,11 @@ var state: State = State.IDLE
 var facing: Vector2 = Vector2.DOWN
 var last_direction: String = "south"
 
+var has_old_weapon: bool = false
+var attack_input_was_down: bool = false
+var attack_serial: int = 0
+
 var footstep_timer: float = 0.0
-const FOOTSTEP_INTERVAL: float = 0.45
 
 var key_left: bool = false
 var key_right: bool = false
@@ -26,20 +32,26 @@ var key_down: bool = false
 func _ready() -> void:
 	add_to_group("player")
 
+	if QuestSystem.has_method("is_old_weapon_acquired") and QuestSystem.is_old_weapon_acquired():
+		has_old_weapon = true
+
+	if animated_sprite != null:
+		if not animated_sprite.animation_finished.is_connected(_on_attack_animation_finished):
+			animated_sprite.animation_finished.connect(_on_attack_animation_finished)
+
 	_setup_animation_speeds()
 	_play_animation_safe("idle_south")
 
-	hitbox.monitoring = false
-	hitbox_shape.disabled = true
+	_disable_hitbox()
 
 	print("PLAYER READY")
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
-		var pressed = event.pressed
-		var keycode = event.keycode
-		var physical_keycode = event.physical_keycode
+		var pressed: bool = event.pressed
+		var keycode: int = event.keycode
+		var physical_keycode: int = event.physical_keycode
 
 		if keycode == KEY_A or physical_keycode == KEY_A or keycode == KEY_LEFT or physical_keycode == KEY_LEFT:
 			key_left = pressed
@@ -60,6 +72,8 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		_update_animation(Vector2.ZERO)
 		return
+
+	_handle_attack_input()
 
 	if state == State.ATTACK:
 		velocity = Vector2.ZERO
@@ -91,8 +105,100 @@ func _physics_process(delta: float) -> void:
 	_update_animation(dir)
 	_update_footstep_audio(delta)
 
-	if Input.is_action_just_pressed("attack"):
+
+func equip_old_weapon() -> void:
+	has_old_weapon = true
+	print("[Player] 낡은 낫 장착")
+
+
+func _handle_attack_input() -> void:
+	if not has_old_weapon:
+		return
+
+	if state == State.ATTACK:
+		return
+
+	var attack_pressed := false
+
+	# InputMap에 attack을 등록해둔 경우도 지원
+	if InputMap.has_action("attack") and Input.is_action_just_pressed("attack"):
+		attack_pressed = true
+
+	# 마우스 왼쪽 클릭 직접 감지
+	var left_click_down := Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+
+	# J키는 개발 테스트용으로 일단 유지
+	var j_down := Input.is_key_pressed(KEY_J) or Input.is_physical_key_pressed(KEY_J)
+
+	if (left_click_down or j_down) and not attack_input_was_down:
+		attack_pressed = true
+
+	attack_input_was_down = left_click_down or j_down
+
+	if attack_pressed:
 		_attack()
+
+
+func _attack() -> void:
+	if not has_old_weapon:
+		return
+
+	if state == State.ATTACK:
+		return
+
+	attack_serial += 1
+	var current_attack_serial := attack_serial
+
+	state = State.ATTACK
+	velocity = Vector2.ZERO
+
+	_update_hitbox_position()
+	_enable_hitbox()
+
+	var attack_anim := "attack_" + last_direction
+	var played := _play_animation_safe(attack_anim)
+
+	print("[Player] 공격 모션: ", attack_anim)
+
+	if not played:
+		_disable_hitbox()
+		_finish_attack()
+		return
+		
+	if QuestSystem.has_method("mark_first_attack_done"):
+		QuestSystem.mark_first_attack_done()
+
+	await get_tree().create_timer(ATTACK_HITBOX_DURATION).timeout
+
+	if current_attack_serial == attack_serial:
+		_disable_hitbox()
+
+	await get_tree().create_timer(ATTACK_RECOVERY_FALLBACK).timeout
+
+	if current_attack_serial == attack_serial and state == State.ATTACK:
+		print("[Player] 공격 애니메이션 종료 신호 없음 — fallback 종료")
+		_finish_attack()
+
+
+func _on_attack_animation_finished() -> void:
+	if state != State.ATTACK:
+		return
+
+	var anim_name := String(animated_sprite.animation)
+
+	if not anim_name.begins_with("attack_"):
+		return
+
+	_finish_attack()
+
+
+func _finish_attack() -> void:
+	if state != State.ATTACK:
+		return
+
+	_disable_hitbox()
+	state = State.IDLE
+	_update_animation(Vector2.ZERO)
 
 
 func _setup_animation_speeds() -> void:
@@ -123,11 +229,28 @@ func _setup_animation_speeds() -> void:
 		"walk_south_west"
 	]
 
+	var attack_anims: Array[String] = [
+		"attack_south",
+		"attack_south_east",
+		"attack_east",
+		"attack_north_east",
+		"attack_north",
+		"attack_north_west",
+		"attack_west",
+		"attack_south_west"
+	]
+
 	for anim_name: String in idle_anims:
 		_set_animation_speed_safe(anim_name, 4.0)
+		_set_animation_loop_safe(anim_name, true)
 
 	for anim_name: String in walk_anims:
 		_set_animation_speed_safe(anim_name, 8.0)
+		_set_animation_loop_safe(anim_name, true)
+
+	for anim_name: String in attack_anims:
+		_set_animation_speed_safe(anim_name, 28.0)
+		_set_animation_loop_safe(anim_name, false)
 
 
 func _set_animation_speed_safe(anim_name: String, fps: float) -> void:
@@ -144,6 +267,20 @@ func _set_animation_speed_safe(anim_name: String, fps: float) -> void:
 		animated_sprite.sprite_frames.set_animation_speed(anim_key, fps)
 	else:
 		print("[Player] missing animation: ", anim_name)
+
+
+func _set_animation_loop_safe(anim_name: String, should_loop: bool) -> void:
+	if anim_name == "":
+		return
+	if animated_sprite == null:
+		return
+	if animated_sprite.sprite_frames == null:
+		return
+
+	var anim_key := StringName(anim_name)
+
+	if animated_sprite.sprite_frames.has_animation(anim_key):
+		animated_sprite.sprite_frames.set_animation_loop(anim_key, should_loop)
 
 
 func _get_direction_name(input_vector: Vector2) -> String:
@@ -175,6 +312,9 @@ func _get_direction_name(input_vector: Vector2) -> String:
 
 
 func _update_animation(input_vector: Vector2) -> void:
+	if state == State.ATTACK:
+		return
+
 	if input_vector != Vector2.ZERO:
 		var direction_name: String = _get_direction_name(input_vector)
 
@@ -202,47 +342,61 @@ func _update_footstep_audio(delta: float) -> void:
 		footstep_timer = FOOTSTEP_INTERVAL
 
 
-func _play_animation_safe(anim_name: String) -> void:
+func _play_animation_safe(anim_name: String) -> bool:
 	if anim_name == "":
-		return
+		return false
 	if animated_sprite == null:
-		return
+		return false
 	if animated_sprite.sprite_frames == null:
-		return
+		return false
 
 	var anim_key := StringName(anim_name)
 
 	if not animated_sprite.sprite_frames.has_animation(anim_key):
 		print("[Player] missing animation: ", anim_name)
-		return
+		return false
 
 	if animated_sprite.animation != anim_key:
 		animated_sprite.play(anim_key)
+	else:
+		animated_sprite.play(anim_key)
+
+	return true
 
 
 func _update_hitbox_position() -> void:
-	hitbox.position = facing * 16
+	if hitbox == null:
+		return
+
+	hitbox.position = facing * 16.0
 
 
-func _attack() -> void:
-	state = State.ATTACK
-	hitbox.monitoring = true
-	hitbox_shape.disabled = false
+func _enable_hitbox() -> void:
+	if hitbox != null:
+		hitbox.set_deferred("monitoring", true)
 
-	await get_tree().create_timer(ATTACK_DURATION).timeout
+	if hitbox_shape != null:
+		hitbox_shape.set_deferred("disabled", false)
 
-	hitbox.monitoring = false
-	hitbox_shape.disabled = true
-	state = State.IDLE
-	_update_animation(Vector2.ZERO)
+
+func _disable_hitbox() -> void:
+	if hitbox != null:
+		hitbox.set_deferred("monitoring", false)
+
+	if hitbox_shape != null:
+		hitbox_shape.set_deferred("disabled", true)
 
 
 func lock() -> void:
 	state = State.LOCKED
 	velocity = Vector2.ZERO
+	_disable_hitbox()
 	_update_animation(Vector2.ZERO)
 
 
 func unlock() -> void:
+	if state == State.ATTACK:
+		return
+
 	state = State.IDLE
 	_update_animation(Vector2.ZERO)

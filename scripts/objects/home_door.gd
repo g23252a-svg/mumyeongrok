@@ -111,6 +111,18 @@ func _try_start_night() -> void:
 
 		await get_tree().create_timer(1.05).timeout
 		AudioManager.play_night_transition()
+		
+		await get_tree().create_timer(0.25).timeout
+		
+		var scene_transition = get_tree().get_first_node_in_group("scene_transition")
+		if scene_transition != null and scene_transition.has_method("play_dawn_transition"):
+			await scene_transition.play_dawn_transition()
+		else:
+			print("[HomeDoor] SceneTransition 없음")
+			
+		QuestSystem.mark_dawn_started()
+
+		
 	else:
 		print("[HomeDoor] DialogueBox 없음")
 
