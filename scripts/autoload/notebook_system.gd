@@ -22,6 +22,9 @@ func add_entry(id: String, display_name: String, description: String) -> void:
 
 	entries.append(entry)
 	print("[무명첩] 새 기록: ", display_name)
+
+	AudioManager.play_notebook_write()
+
 	entry_added.emit(entry)
 
 

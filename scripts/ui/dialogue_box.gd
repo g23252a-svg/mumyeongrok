@@ -32,10 +32,12 @@ func show_dialogue(speaker: String, lines: Array) -> void:
 	can_close = false
 	panel.visible = true
 
+	AudioManager.play_dialogue_open()
+
 	name_label.text = speaker
 
 	var body_text := ""
-	
+
 	for line in lines:
 		body_text += str(line) + "\n"
 
@@ -62,14 +64,23 @@ func _unhandled_input(event: InputEvent) -> void:
 		var keycode = event.keycode
 		var physical_keycode = event.physical_keycode
 
-		if keycode == KEY_E or physical_keycode == KEY_E:
-			is_open = false
+		var should_close: bool = (
+			keycode == KEY_E
+			or physical_keycode == KEY_E
+			or keycode == KEY_SPACE
+			or physical_keycode == KEY_SPACE
+			or keycode == KEY_ENTER
+			or physical_keycode == KEY_ENTER
+		)
+
+		if should_close:
+			_close_dialogue()
 			get_viewport().set_input_as_handled()
 
-		if keycode == KEY_SPACE or physical_keycode == KEY_SPACE:
-			is_open = false
-			get_viewport().set_input_as_handled()
 
-		if keycode == KEY_ENTER or physical_keycode == KEY_ENTER:
-			is_open = false
-			get_viewport().set_input_as_handled()
+func _close_dialogue() -> void:
+	if not is_open:
+		return
+
+	AudioManager.play_dialogue_close()
+	is_open = false

@@ -41,6 +41,9 @@ func _process(_delta: float) -> void:
 	if is_playing_event:
 		return
 
+	if QuestSystem.is_night_prepared():
+		return
+
 	var interact_pressed := false
 
 	if InputMap.has_action("interact") and Input.is_action_just_pressed("interact"):
@@ -61,6 +64,10 @@ func _update_hint() -> void:
 	if interaction_hint == null:
 		return
 
+	if QuestSystem.is_night_prepared():
+		interaction_hint.visible = false
+		return
+
 	if QuestSystem.is_returned_to_yeonhwa():
 		interaction_hint.text = "[E] 밤 준비"
 	else:
@@ -70,6 +77,9 @@ func _update_hint() -> void:
 
 
 func _try_start_night() -> void:
+	if QuestSystem.is_night_prepared():
+		return
+
 	if not QuestSystem.is_returned_to_yeonhwa():
 		print("[HomeDoor] 아직 연화에게 돌아가지 않음")
 		return
@@ -84,6 +94,9 @@ func _try_start_night() -> void:
 	if player != null and player.has_method("lock"):
 		player.lock()
 
+	AudioManager.play_home_door()
+	await get_tree().create_timer(0.45).timeout
+
 	var dialogue_box = get_tree().get_first_node_in_group("dialogue_box")
 
 	if dialogue_box != null:
@@ -93,11 +106,17 @@ func _try_start_night() -> void:
 		night_lines.append("이 밤이 지나면, 같은 아침은 오지 않을 것이다.")
 
 		await dialogue_box.show_dialogue("무명록", night_lines)
+
 		QuestSystem.mark_night_prepared()
+
+		await get_tree().create_timer(1.05).timeout
+		AudioManager.play_night_transition()
 	else:
 		print("[HomeDoor] DialogueBox 없음")
 
 	if player != null and player.has_method("unlock"):
 		player.unlock()
+
+	is_playing_event = false
 
 	print("[PROLOGUE] 밤 준비 이벤트 완료")
