@@ -6,6 +6,7 @@ size = Vector2(44, 56)
 [node name="HomeDoor" type="Area2D"]
 
 [node name="Sprite" type="ColorRect" parent="."]
+visible = false
 offset_left = -18.0
 offset_top = -24.0
 offset_right = 18.0
@@ -13,10 +14,10 @@ offset_bottom = 24.0
 color = Color(0.352941, 0.231373, 0.145098, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("RectangleShape2D_l2j5o")
 
 [node name="InteractionHint" type="Label" parent="."]
-visible = false
 offset_left = -44.0
 offset_top = -50.0
 offset_right = 44.0
