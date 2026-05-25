@@ -1,0 +1,41 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://bf1fepecr46gp"]
+
+[ext_resource type="Texture2D" uid="uid://cyfe2kiklcarv" path="res://assets/sprites/characters/npcs/kim_makdong/kim_makdong_east.png" id="1_d1g5u"]
+[ext_resource type="Texture2D" uid="uid://c0e3oaqfeipq1" path="res://assets/sprites/characters/npcs/kim_makdong/kim_makdong_north.png" id="2_ys16t"]
+[ext_resource type="Texture2D" uid="uid://d3figbh703qa8" path="res://assets/sprites/characters/npcs/kim_makdong/kim_makdong_south.png" id="3_jegni"]
+[ext_resource type="Texture2D" uid="uid://b23tlbh7nkoyn" path="res://assets/sprites/characters/npcs/kim_makdong/kim_makdong_west.png" id="4_51utg"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_d1g5u")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ys16t")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_jegni")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_51utg")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 5.0
+}]

@@ -173,9 +173,16 @@ func _get_direction_name(input_vector: Vector2) -> String:
 func _update_animation(input_vector: Vector2) -> void:
 	if input_vector != Vector2.ZERO:
 		var direction_name: String = _get_direction_name(input_vector)
+
+		if direction_name == "":
+			direction_name = "south"
+
 		last_direction = direction_name
-		_play_animation_safe("idle_" + last_direction)
+		_play_animation_safe("walk_" + direction_name)
 	else:
+		if last_direction == "":
+			last_direction = "south"
+
 		_play_animation_safe("idle_" + last_direction)
 
 

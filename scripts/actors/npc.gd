@@ -4,6 +4,10 @@ extends StaticBody2D
 @export var npc_id: String = "kim_makdong"
 @export var display_name: String = "김막동"
 @export var description: String = "짚신을 만들던 이웃집 노인."
+
+@export var npc_frames: SpriteFrames
+@export var start_direction: String = "south"
+
 @export var dialogue_lines: Array[String] = [
 	"오늘은 일찍 들어왔구먼.",
 	"산 너머 바다가 좀 이상하다는 말이 있네.",
@@ -19,6 +23,9 @@ extends StaticBody2D
 @export var npc_color: Color = Color(0.55, 0.43, 0.28)
 
 @onready var sprite: ColorRect = get_node_or_null("Sprite") as ColorRect
+@onready var legacy_sprite: CanvasItem = get_node_or_null("Sprite") as CanvasItem
+@onready var animated_sprite: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+
 @onready var name_label: Label = get_node_or_null("NameLabel") as Label
 @onready var interaction_hint: Label = get_node_or_null("InteractionHint") as Label
 @onready var interact_area: Area2D = $InteractArea
@@ -27,13 +34,14 @@ var player_in_range: bool = false
 var has_talked: bool = false
 var e_was_down: bool = false
 var is_talking: bool = false
+var current_direction: String = "south"
 
 
 func _ready() -> void:
 	add_to_group("npc")
 
-	if sprite != null:
-		sprite.color = npc_color
+	current_direction = start_direction
+	_setup_visual()
 
 	if name_label != null:
 		name_label.text = display_name
@@ -49,9 +57,36 @@ func _ready() -> void:
 	print("[NPC READY] ", display_name)
 
 
+func _setup_visual() -> void:
+	if animated_sprite == null:
+		if sprite != null:
+			sprite.color = npc_color
+			sprite.visible = true
+		return
+
+	if npc_frames != null:
+		animated_sprite.sprite_frames = npc_frames
+		animated_sprite.visible = true
+
+		if legacy_sprite != null:
+			legacy_sprite.visible = false
+
+		var anim_name: String = "idle_" + current_direction
+		_play_npc_animation(anim_name)
+	else:
+		animated_sprite.visible = false
+
+		if legacy_sprite != null:
+			legacy_sprite.visible = true
+
+		if sprite != null:
+			sprite.color = npc_color
+
+
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = true
+		_face_player()
 
 		if interaction_hint != null and not is_talking:
 			interaction_hint.visible = true
@@ -73,12 +108,15 @@ func _process(_delta: float) -> void:
 	if is_talking:
 		return
 
-	var interact_pressed := false
+	if player_in_range:
+		_face_player()
+
+	var interact_pressed: bool = false
 
 	if InputMap.has_action("interact") and Input.is_action_just_pressed("interact"):
 		interact_pressed = true
 
-	var e_down := Input.is_key_pressed(KEY_E) or Input.is_physical_key_pressed(KEY_E)
+	var e_down: bool = Input.is_key_pressed(KEY_E) or Input.is_physical_key_pressed(KEY_E)
 
 	if e_down and not e_was_down:
 		interact_pressed = true
@@ -91,6 +129,7 @@ func _process(_delta: float) -> void:
 
 func talk() -> void:
 	is_talking = true
+	_face_player()
 
 	if interaction_hint != null:
 		interaction_hint.visible = false
@@ -111,7 +150,7 @@ func talk() -> void:
 	if player != null and player.has_method("lock"):
 		player.lock()
 
-	var is_yeonhwa_return_talk := (
+	var is_yeonhwa_return_talk: bool = (
 		npc_id == "wife"
 		and QuestSystem.is_all_villagers_talked()
 		and not QuestSystem.is_returned_to_yeonhwa()
@@ -138,3 +177,55 @@ func talk() -> void:
 
 	if player_in_range and interaction_hint != null:
 		interaction_hint.visible = true
+
+
+func _get_direction_to_player() -> String:
+	var player = get_tree().get_first_node_in_group("player")
+
+	if player == null:
+		return current_direction
+
+	var diff: Vector2 = player.global_position - global_position
+
+	if abs(diff.x) > abs(diff.y):
+		if diff.x > 0:
+			return "east"
+		else:
+			return "west"
+	else:
+		if diff.y > 0:
+			return "south"
+		else:
+			return "north"
+
+
+func _face_player() -> void:
+	if npc_frames == null:
+		return
+	if animated_sprite == null:
+		return
+	if animated_sprite.sprite_frames == null:
+		return
+
+	current_direction = _get_direction_to_player()
+
+	var anim_name: String = "idle_" + current_direction
+	_play_npc_animation(anim_name)
+
+
+func _play_npc_animation(anim_name: String) -> void:
+	if anim_name == "":
+		anim_name = "idle_south"
+
+	if animated_sprite == null:
+		return
+	if animated_sprite.sprite_frames == null:
+		return
+
+	var anim_key = StringName(anim_name)
+
+	if animated_sprite.sprite_frames.has_animation(anim_key):
+		if animated_sprite.animation != anim_key:
+			animated_sprite.play(anim_key)
+	else:
+		print("[NPC] missing animation: ", anim_name)

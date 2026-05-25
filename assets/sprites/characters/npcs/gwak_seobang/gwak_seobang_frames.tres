@@ -1,0 +1,41 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://dmv1efpefni7i"]
+
+[ext_resource type="Texture2D" uid="uid://bbhl4n6svo54x" path="res://assets/sprites/characters/npcs/gwak_seobang/gwak_seobang_east.png" id="1_y6mkt"]
+[ext_resource type="Texture2D" uid="uid://bumd3e7475lxe" path="res://assets/sprites/characters/npcs/gwak_seobang/gwak_seobang_north.png" id="2_ugoob"]
+[ext_resource type="Texture2D" uid="uid://cux5n3ymur75a" path="res://assets/sprites/characters/npcs/gwak_seobang/gwak_seobang_south.png" id="3_gkrru"]
+[ext_resource type="Texture2D" uid="uid://bhxvf5ab7o4ct" path="res://assets/sprites/characters/npcs/gwak_seobang/gwak_seobang_west.png" id="4_u7okn"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_y6mkt")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ugoob")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_gkrru")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_u7okn")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 5.0
+}]
