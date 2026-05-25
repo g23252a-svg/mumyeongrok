@@ -14,6 +14,9 @@ var state: State = State.IDLE
 var facing: Vector2 = Vector2.DOWN
 var last_direction: String = "south"
 
+var footstep_timer: float = 0.0
+const FOOTSTEP_INTERVAL: float = 0.45
+
 var key_left: bool = false
 var key_right: bool = false
 var key_up: bool = false
@@ -51,7 +54,7 @@ func _input(event: InputEvent) -> void:
 			key_down = pressed
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if state == State.LOCKED:
 		velocity = Vector2.ZERO
 		move_and_slide()
@@ -86,6 +89,7 @@ func _physics_process(_delta: float) -> void:
 
 	move_and_slide()
 	_update_animation(dir)
+	_update_footstep_audio(delta)
 
 	if Input.is_action_just_pressed("attack"):
 		_attack()
@@ -184,6 +188,18 @@ func _update_animation(input_vector: Vector2) -> void:
 			last_direction = "south"
 
 		_play_animation_safe("idle_" + last_direction)
+
+
+func _update_footstep_audio(delta: float) -> void:
+	if velocity.length() <= 0.0:
+		footstep_timer = 0.0
+		return
+
+	footstep_timer -= delta
+
+	if footstep_timer <= 0.0:
+		AudioManager.play_random_footstep()
+		footstep_timer = FOOTSTEP_INTERVAL
 
 
 func _play_animation_safe(anim_name: String) -> void:

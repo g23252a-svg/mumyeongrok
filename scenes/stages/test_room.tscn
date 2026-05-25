@@ -1,16 +1,19 @@
-[gd_scene load_steps=17 format=3 uid="uid://b8vkxvsmwesu0"]
+[gd_scene load_steps=21 format=3 uid="uid://b8vkxvsmwesu0"]
 
 [ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_lko3o"]
 [ext_resource type="Script" path="res://scripts/actors/camera_follow.gd" id="2_obux8"]
 [ext_resource type="PackedScene" uid="uid://bnxhol7ffe6lv" path="res://scenes/actors/npc.tscn" id="3_gphku"]
 [ext_resource type="SpriteFrames" uid="uid://bf1fepecr46gp" path="res://assets/sprites/characters/npcs/kim_makdong/kim_makdong_frames.tres" id="4_02qx0"]
 [ext_resource type="PackedScene" uid="uid://b85eyeq21yh3c" path="res://scenes/ui/dialogue_box.tscn" id="5_0psg8"]
-[ext_resource type="SpriteFrames" uid="uid://chjrsihq477ae" path="res://assets/sprites/characters/npcs/booni/new_sprite_frames.tres" id="5_3ft0d"]
+[ext_resource type="Texture2D" uid="uid://d060fqhk23suc" path="res://assets/sprites/characters/npcs/booni/booni_east.png" id="5_7h43s"]
 [ext_resource type="PackedScene" uid="uid://c02gkkgwltw46" path="res://scenes/ui/notebook_ui.tscn" id="5_l63ce"]
+[ext_resource type="Texture2D" uid="uid://1617r427nrtt" path="res://assets/sprites/characters/npcs/booni/booni_north.png" id="6_oocgj"]
 [ext_resource type="SpriteFrames" uid="uid://dmv1efpefni7i" path="res://assets/sprites/characters/npcs/gwak_seobang/gwak_seobang_frames.tres" id="6_uddvr"]
 [ext_resource type="PackedScene" uid="uid://ck6jdxdkplkqj" path="res://scenes/ui/objective_ui.tscn" id="6_ui3kj"]
+[ext_resource type="Texture2D" uid="uid://bm8f0slrx3gaf" path="res://assets/sprites/characters/npcs/booni/booni_south.png" id="7_cm7sg"]
 [ext_resource type="PackedScene" uid="uid://ch1oitmud1o25" path="res://scenes/objects/home_door.tscn" id="7_edkim"]
 [ext_resource type="SpriteFrames" uid="uid://cci6f8ctf56s0" path="res://assets/sprites/characters/npcs/yeonhwa/yeonhwa_frames.tres" id="7_p3tpv"]
+[ext_resource type="Texture2D" uid="uid://b3olkm2on8ulf" path="res://assets/sprites/characters/npcs/booni/booni_west.png" id="8_feft5"]
 [ext_resource type="Script" path="res://scripts/objects/home_door.gd" id="8_r0lme"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6egxa"]
@@ -24,6 +27,41 @@ size = Vector2(8, 220)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_45dtr"]
 size = Vector2(8, 220)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2cnrr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_7h43s")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_oocgj")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_cm7sg")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_feft5")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 5.0
+}]
 
 [node name="TestRoom" type="Node2D"]
 
@@ -65,7 +103,7 @@ scale = Vector2(0.8, 0.8)
 npc_id = "booni"
 display_name = "분이"
 description = "우물가에서 물을 긷던 마을 처녀. 사람들의 말보다 손끝의 떨림을 먼저 보았다."
-npc_frames = ExtResource("5_3ft0d")
+npc_frames = SubResource("SpriteFrames_2cnrr")
 dialogue_lines = Array[String](["우물가에 사람들이 몰렸어요", "말은 없는데 손끝이 떨렸어요", "무슨 일이 오는 걸까요?"])
 
 [node name="NPC_GwakSeobang" parent="." instance=ExtResource("3_gphku")]

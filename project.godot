@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 NotebookSystem="*res://scripts/autoload/notebook_system.gd"
 QuestSystem="*res://scripts/autoload/quest_system.gd"
+AudioManager="*res://scripts/systems/audio_manager.gd"
 
 [display]
 
