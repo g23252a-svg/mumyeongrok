@@ -1,5 +1,6 @@
-[gd_scene load_steps=21 format=3 uid="uid://b8vkxvsmwesu0"]
+[gd_scene load_steps=23 format=3 uid="uid://b8vkxvsmwesu0"]
 
+[ext_resource type="Script" path="res://scripts/test_room.gd" id="1_458uo"]
 [ext_resource type="PackedScene" uid="uid://uqtjlp5ar27a" path="res://scenes/actors/player.tscn" id="1_lko3o"]
 [ext_resource type="Script" path="res://scripts/actors/camera_follow.gd" id="2_obux8"]
 [ext_resource type="PackedScene" uid="uid://bnxhol7ffe6lv" path="res://scenes/actors/npc.tscn" id="3_gphku"]
@@ -15,6 +16,7 @@
 [ext_resource type="SpriteFrames" uid="uid://cci6f8ctf56s0" path="res://assets/sprites/characters/npcs/yeonhwa/yeonhwa_frames.tres" id="7_p3tpv"]
 [ext_resource type="Texture2D" uid="uid://b3olkm2on8ulf" path="res://assets/sprites/characters/npcs/booni/booni_west.png" id="8_feft5"]
 [ext_resource type="Script" path="res://scripts/objects/home_door.gd" id="8_r0lme"]
+[ext_resource type="Texture2D" uid="uid://btvhlu37bppoy" path="res://assets/maps/prologue_village/prologue_village_evening.png" id="16_2xvei"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6egxa"]
 size = Vector2(400, 8)
@@ -64,6 +66,7 @@ animations = [{
 }]
 
 [node name="TestRoom" type="Node2D"]
+script = ExtResource("1_458uo")
 
 [node name="Walls" type="StaticBody2D" parent="."]
 
@@ -91,14 +94,14 @@ script = ExtResource("2_obux8")
 target_path = NodePath("../Walls/Player")
 
 [node name="NPC_KimMakdong" parent="." instance=ExtResource("3_gphku")]
-position = Vector2(60, 0)
+position = Vector2(60, -37)
 scale = Vector2(0.8, 0.8)
 description = "짚신을 삼던 이웃집 노인. 동래 길목의 소문을 누구보다 먼저 듣는다."
 npc_frames = ExtResource("4_02qx0")
 dialogue_lines = Array[String](["동래 길이 영 뒤숭숭하네", "왜군 배가 바다를 메웠다더군", "밤 깊기 전, 집안부터 챙기게"])
 
 [node name="NPC_Booni" parent="." instance=ExtResource("3_gphku")]
-position = Vector2(-80, 40)
+position = Vector2(-92, 58)
 scale = Vector2(0.8, 0.8)
 npc_id = "booni"
 display_name = "분이"
@@ -107,7 +110,7 @@ npc_frames = SubResource("SpriteFrames_2cnrr")
 dialogue_lines = Array[String](["우물가에 사람들이 몰렸어요", "말은 없는데 손끝이 떨렸어요", "무슨 일이 오는 걸까요?"])
 
 [node name="NPC_GwakSeobang" parent="." instance=ExtResource("3_gphku")]
-position = Vector2(120, 55)
+position = Vector2(60, 66)
 scale = Vector2(0.9, 0.9)
 npc_id = "gwak_seobang"
 display_name = "곽서방"
@@ -116,7 +119,7 @@ npc_frames = ExtResource("6_uddvr")
 dialogue_lines = Array[String](["오늘은 낫보다 칼을 찾더군", "농사꾼 손에 쇠붙이가 들렸소", "문단속 단단히 하시오"])
 
 [node name="NPC_Wife" parent="." instance=ExtResource("3_gphku")]
-position = Vector2(-60, -55)
+position = Vector2(-106, -26)
 scale = Vector2(0.8, 0.8)
 npc_id = "wife"
 display_name = "연화"
@@ -133,3 +136,10 @@ dialogue_lines = Array[String](["당신, 밖이 왜 이리 소란해요?", "개 
 [node name="HomeDoor" parent="." instance=ExtResource("7_edkim")]
 position = Vector2(-165, -68)
 script = ExtResource("8_r0lme")
+
+[node name="BackgroundMap" type="Sprite2D" parent="."]
+z_index = -100
+texture_filter = 2
+position = Vector2(-3, 21)
+scale = Vector2(0.383, 0.383)
+texture = ExtResource("16_2xvei")

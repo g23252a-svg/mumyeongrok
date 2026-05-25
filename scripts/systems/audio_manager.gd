@@ -11,6 +11,7 @@ var notebook_write_stream: AudioStream
 var objective_update_stream: AudioStream
 var home_door_stream: AudioStream
 var night_transition_stream: AudioStream
+var village_evening_bgm: AudioStream
 
 
 const FOOTSTEP_PATHS := [
@@ -25,6 +26,8 @@ const NOTEBOOK_WRITE_PATH := "res://assets/audio/sfx/notebook_write.wav"
 const OBJECTIVE_UPDATE_PATH := "res://assets/audio/sfx/objective_update.wav"
 const HOME_DOOR_PATH := "res://assets/audio/sfx/home_door.wav"
 const NIGHT_TRANSITION_PATH := "res://assets/audio/sfx/night_transition.wav"
+
+const VILLAGE_EVENING_BGM_PATH := "res://assets/audio/bgm/village_evening.ogg"
 
 
 func _ready() -> void:
@@ -53,11 +56,17 @@ func _load_audio_files() -> void:
 	objective_update_stream = _load_optional_audio(OBJECTIVE_UPDATE_PATH)
 	home_door_stream = _load_optional_audio(HOME_DOOR_PATH)
 	night_transition_stream = _load_optional_audio(NIGHT_TRANSITION_PATH)
+	village_evening_bgm = _load_optional_audio(VILLAGE_EVENING_BGM_PATH)
+
+	if village_evening_bgm is AudioStreamOggVorbis:
+		village_evening_bgm.loop = true
 
 
 func _load_optional_audio(path: String) -> AudioStream:
 	if ResourceLoader.exists(path):
 		return load(path)
+
+	print("[AudioManager] 파일 없음: ", path)
 	return null
 
 
@@ -101,3 +110,24 @@ func play_home_door() -> void:
 
 func play_night_transition() -> void:
 	play_sfx(night_transition_stream, -6.0)
+
+
+func play_village_evening_bgm() -> void:
+	if village_evening_bgm == null:
+		return
+
+	if bgm_player.stream == village_evening_bgm and bgm_player.playing:
+		return
+
+	bgm_player.stream = village_evening_bgm
+	bgm_player.volume_db = -16.0
+	bgm_player.play()
+
+
+func stop_bgm() -> void:
+	if bgm_player.playing:
+		bgm_player.stop()
+
+
+func set_bgm_volume(volume_db: float) -> void:
+	bgm_player.volume_db = volume_db
